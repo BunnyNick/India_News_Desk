@@ -1,0 +1,10 @@
+com/indianewsdesk/entity/Favorite$Builder.class
+com/indianewsdesk/service/NewspaperService.class
+com/indianewsdesk/repository/FavoriteRepository.class
+com/indianewsdesk/repository/NewspaperRepository.class
+com/indianewsdesk/dto/StatsDTO.class
+com/indianewsdesk/IndiaNewsDeskApplication.class
+com/indianewsdesk/entity/Favorite.class
+com/indianewsdesk/controller/NewspaperController.class
+com/indianewsdesk/entity/Newspaper.class
+com/indianewsdesk/entity/Newspaper$Builder.class

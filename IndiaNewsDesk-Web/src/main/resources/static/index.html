@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IndiaNewsDesk 📰</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --saffron: #FF9933;
+      --green:   #138808;
+      --navy:    #000080;
+      --light-bg:#f8f9fa;
+    }
+
+    body { background: var(--light-bg); font-family: 'Segoe UI', sans-serif; }
+
+    /* ── Navbar ── */
+    .navbar-brand span.flag { font-size: 1.4rem; }
+    .navbar { background: linear-gradient(135deg, var(--navy) 0%, #1a237e 100%) !important; }
+
+    /* ── Hero strip ── */
+    .hero-strip {
+      background: linear-gradient(90deg, var(--saffron), white, var(--green));
+      height: 5px;
+    }
+
+    /* ── Stat cards ── */
+    .stat-card { border-left: 4px solid var(--saffron); border-radius: 10px; }
+    .stat-card .stat-num { font-size: 2rem; font-weight: 700; color: var(--navy); }
+
+    /* ── Filter bar ── */
+    .filter-bar { background: white; border-radius: 12px;
+                  box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+
+    /* ── Newspaper card ── */
+    .news-card {
+      border: none; border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .news-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.13); }
+
+    .lang-badge  { font-size: .72rem; font-weight: 600; letter-spacing: .03em; }
+    .free-badge  { background: #d4edda; color: #155724; }
+    .login-badge { background: #fff3cd; color: #856404; }
+
+    .card-footer-btns .btn { font-size: .82rem; border-radius: 8px; }
+
+    /* ── Favorites tab ── */
+    .fav-item { background: white; border-radius: 10px;
+                padding: 12px 16px; margin-bottom: 8px;
+                box-shadow: 0 1px 6px rgba(0,0,0,.06); }
+
+    /* ── Stats chart ── */
+    .bar-wrap { background: white; border-radius: 12px;
+                padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+    .bar-row { display: flex; align-items: center; margin-bottom: 10px; }
+    .bar-label { width: 110px; font-size: .85rem; font-weight: 600; flex-shrink: 0; }
+    .bar-track { flex: 1; background: #e9ecef; border-radius: 6px; height: 20px; }
+    .bar-fill  { height: 100%; border-radius: 6px;
+                 background: linear-gradient(90deg, var(--saffron), var(--green));
+                 transition: width .6s ease; }
+    .bar-count { width: 36px; text-align: right; font-size: .85rem;
+                 font-weight: 700; color: var(--navy); margin-left: 10px; }
+
+    /* ── Empty state ── */
+    .empty-state { text-align: center; padding: 60px 20px; color: #6c757d; }
+    .empty-state i { font-size: 3rem; }
+
+    /* ── Spinner ── */
+    #spinner { display: none; }
+
+    /* ── Toast ── */
+    .toast-container { z-index: 9999; }
+
+    /* ── Section tabs ── */
+    .nav-tabs .nav-link.active { border-bottom: 3px solid var(--saffron);
+                                  font-weight: 600; color: var(--navy); }
+    .nav-tabs .nav-link { color: #495057; }
+
+    @media (max-width: 576px) {
+      .stat-card .stat-num { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navbar ─────────────────────────────────────────────── -->
+<nav class="navbar navbar-dark navbar-expand-lg px-3 py-2">
+  <a class="navbar-brand fw-bold fs-4" href="#">
+    <span class="flag">🇮🇳</span> IndiaNewsDesk
+    <small class="text-warning ms-2 fs-6">Today's Newspapers</small>
+  </a>
+  <div class="ms-auto text-white small" id="todayDate"></div>
+</nav>
+<div class="hero-strip"></div>
+
+<div class="container-fluid px-3 px-md-4 mt-4">
+
+  <!-- ── Stat cards ─────────────────────────────────────── -->
+  <div class="row g-3 mb-4" id="statsRow">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card p-3">
+        <div class="text-muted small">Total Papers</div>
+        <div class="stat-num" id="statTotal">–</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card p-3">
+        <div class="text-muted small">Languages</div>
+        <div class="stat-num" id="statLangs">–</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card p-3">
+        <div class="text-muted small">States Covered</div>
+        <div class="stat-num" id="statStates">–</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card p-3">
+        <div class="text-muted small">Saved Favorites</div>
+        <div class="stat-num" id="statFavs">–</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tabs ───────────────────────────────────────────── -->
+  <ul class="nav nav-tabs mb-3" id="mainTabs">
+    <li class="nav-item">
+      <button class="nav-link active" onclick="showTab('browse')">
+        <i class="bi bi-newspaper me-1"></i>Browse
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" onclick="showTab('favorites')">
+        <i class="bi bi-bookmark-heart me-1"></i>Favorites
+        <span class="badge bg-warning text-dark ms-1" id="favBadge">0</span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" onclick="showTab('stats')">
+        <i class="bi bi-bar-chart me-1"></i>Stats
+      </button>
+    </li>
+  </ul>
+
+  <!-- ── Browse Tab ─────────────────────────────────────── -->
+  <div id="tab-browse">
+
+    <!-- Filter bar -->
+    <div class="filter-bar p-3 mb-4">
+      <div class="row g-2 align-items-end">
+        <div class="col-12 col-md-4">
+          <label class="form-label fw-semibold small">🔍 Search</label>
+          <input type="text" id="searchInput" class="form-control"
+                 placeholder="e.g. Hindu, Jagran, Eenadu…"
+                 oninput="debounceSearch()"/>
+        </div>
+        <div class="col-6 col-md-3">
+          <label class="form-label fw-semibold small">📍 State</label>
+          <select id="stateFilter" class="form-select" onchange="applyFilters()">
+            <option value="">All States</option>
+          </select>
+        </div>
+        <div class="col-6 col-md-3">
+          <label class="form-label fw-semibold small">🗣 Language</label>
+          <select id="langFilter" class="form-select" onchange="applyFilters()">
+            <option value="">All Languages</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-2 d-flex gap-2">
+          <button class="btn btn-outline-secondary w-100" onclick="resetFilters()">
+            <i class="bi bi-x-circle me-1"></i>Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result count -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span id="resultCount" class="text-muted small fw-semibold"></span>
+      <div id="spinner" class="spinner-border spinner-border-sm text-warning" role="status"></div>
+    </div>
+
+    <!-- Cards grid -->
+    <div class="row g-3" id="cardsGrid"></div>
+  </div>
+
+  <!-- ── Favorites Tab ──────────────────────────────────── -->
+  <div id="tab-favorites" style="display:none">
+    <div id="favList"></div>
+  </div>
+
+  <!-- ── Stats Tab ──────────────────────────────────────── -->
+  <div id="tab-stats" style="display:none">
+    <div class="row g-4">
+      <div class="col-12 col-md-7">
+        <div class="bar-wrap">
+          <h6 class="fw-bold mb-3"><i class="bi bi-translate me-2 text-warning"></i>Papers by Language</h6>
+          <div id="langChart"></div>
+        </div>
+      </div>
+      <div class="col-12 col-md-5">
+        <div class="bar-wrap">
+          <h6 class="fw-bold mb-3"><i class="bi bi-map me-2 text-success"></i>Papers by Region</h6>
+          <div id="regionChart"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ── Toast notification ──────────────────────────────── -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="toastEl" class="toast align-items-center border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body fw-semibold" id="toastMsg"></div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ── Config ─────────────────────────────────────────────────
+const API = '';   // same origin — Spring Boot serves both
+
+// ── State ──────────────────────────────────────────────────
+let allPapers    = [];
+let favoriteIds  = new Set();
+let debounceTimer;
+
+// ── Init ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  setDate();
+  await Promise.all([loadFilters(), loadPapers(), loadFavorites(), loadStats()]);
+});
+
+function setDate() {
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('todayDate').textContent =
+    new Date().toLocaleDateString('en-IN', opts);
+}
+
+// ── Load filters ────────────────────────────────────────────
+async function loadFilters() {
+  const [states, langs] = await Promise.all([
+    fetch(`${API}/api/states`).then(r => r.json()),
+    fetch(`${API}/api/languages`).then(r => r.json())
+  ]);
+
+  const stateEl = document.getElementById('stateFilter');
+  states.forEach(s => stateEl.add(new Option(s, s)));
+
+  const langEl = document.getElementById('langFilter');
+  langs.forEach(l => langEl.add(new Option(l, l)));
+
+  document.getElementById('statLangs').textContent  = langs.length;
+  document.getElementById('statStates').textContent = states.length;
+}
+
+// ── Load all papers ─────────────────────────────────────────
+async function loadPapers() {
+  showSpinner(true);
+  const data = await fetch(`${API}/api/newspapers`).then(r => r.json());
+  allPapers = data;
+  renderCards(data);
+  document.getElementById('statTotal').textContent = data.length;
+  showSpinner(false);
+}
+
+// ── Load favorites ──────────────────────────────────────────
+async function loadFavorites() {
+  const data = await fetch(`${API}/api/favorites`).then(r => r.json());
+  favoriteIds = new Set(data.map(f => f.newspaper.id));
+  renderFavorites(data);
+  document.getElementById('statFavs').textContent = data.length;
+  document.getElementById('favBadge').textContent = data.length;
+}
+
+// ── Load stats ──────────────────────────────────────────────
+async function loadStats() {
+  const s = await fetch(`${API}/api/stats`).then(r => r.json());
+  renderChart('langChart',   s.byLanguage);
+  renderChart('regionChart', s.byRegion);
+}
+
+// ── Apply filters ───────────────────────────────────────────
+async function applyFilters() {
+  const state = document.getElementById('stateFilter').value;
+  const lang  = document.getElementById('langFilter').value;
+  const kw    = document.getElementById('searchInput').value.trim();
+
+  showSpinner(true);
+  let url;
+  if (kw) {
+    url = `${API}/api/search?keyword=${encodeURIComponent(kw)}`;
+  } else if (state || lang) {
+    url = `${API}/api/newspapers/filter?state=${encodeURIComponent(state)}&language=${encodeURIComponent(lang)}`;
+  } else {
+    url = `${API}/api/newspapers`;
+  }
+  const data = await fetch(url).then(r => r.json());
+  renderCards(data);
+  showSpinner(false);
+}
+
+function debounceSearch() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(applyFilters, 350);
+}
+
+function resetFilters() {
+  document.getElementById('stateFilter').value = '';
+  document.getElementById('langFilter').value  = '';
+  document.getElementById('searchInput').value = '';
+  renderCards(allPapers);
+}
+
+// ── Render newspaper cards ──────────────────────────────────
+function renderCards(papers) {
+  const grid = document.getElementById('cardsGrid');
+  document.getElementById('resultCount').textContent =
+    `${papers.length} newspaper${papers.length !== 1 ? 's' : ''} found`;
+
+  if (!papers.length) {
+    grid.innerHTML = `
+      <div class="col-12 empty-state">
+        <i class="bi bi-newspaper d-block mb-2"></i>
+        <p class="fw-semibold">No newspapers found for the selected filters.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = papers.map(p => {
+    const isFav  = favoriteIds.has(p.id);
+    const free   = p.freeEpaper
+      ? '<span class="badge free-badge  lang-badge">✅ Free</span>'
+      : '<span class="badge login-badge lang-badge">🔐 Login</span>';
+    const favBtn = isFav
+      ? `<button class="btn btn-sm btn-warning" onclick="removeFavByNewspaper(${p.id})">
+           <i class="bi bi-bookmark-check-fill"></i> Saved</button>`
+      : `<button class="btn btn-sm btn-outline-warning" onclick="addFavorite(${p.id})">
+           <i class="bi bi-bookmark"></i> Save</button>`;
+
+    return `
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+      <div class="card news-card h-100">
+        <div class="card-body pb-2">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="card-title fw-bold mb-0 me-2" style="line-height:1.3">${p.name}</h6>
+            ${free}
+          </div>
+          <p class="text-muted small mb-1">
+            <i class="bi bi-translate me-1"></i>${p.language}
+            &nbsp;|&nbsp;
+            <i class="bi bi-geo-alt me-1"></i>${p.state}
+          </p>
+          <p class="text-muted small mb-0">
+            <i class="bi bi-calendar3 me-1"></i>Est. ${p.founded}
+            &nbsp;|&nbsp;
+            <i class="bi bi-map me-1"></i>${p.region}
+          </p>
+        </div>
+        <div class="card-footer bg-transparent border-top-0 pt-0 pb-3 px-3">
+          <div class="d-flex gap-2 card-footer-btns">
+            <a href="${p.epaperUrl}" target="_blank" class="btn btn-sm btn-primary flex-fill">
+              <i class="bi bi-newspaper me-1"></i>ePaper
+            </a>
+            <a href="${p.websiteUrl}" target="_blank" class="btn btn-sm btn-outline-secondary flex-fill">
+              <i class="bi bi-globe me-1"></i>Website
+            </a>
+            ${favBtn}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Render favorites list ───────────────────────────────────
+function renderFavorites(favs) {
+  const el = document.getElementById('favList');
+  if (!favs.length) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <i class="bi bi-bookmark d-block mb-2"></i>
+        <p>No favorites yet. Click <strong>Save</strong> on any newspaper to bookmark it.</p>
+      </div>`;
+    return;
+  }
+  el.innerHTML = favs.map(f => `
+    <div class="fav-item d-flex justify-content-between align-items-center" id="fav-${f.id}">
+      <div>
+        <strong>${f.newspaper.name}</strong>
+        <span class="text-muted small ms-2">${f.newspaper.language} · ${f.newspaper.state}</span>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="${f.newspaper.epaperUrl}" target="_blank"
+           class="btn btn-sm btn-primary">
+          <i class="bi bi-newspaper"></i> ePaper
+        </a>
+        <button class="btn btn-sm btn-outline-danger" onclick="removeFavorite(${f.id}, ${f.newspaper.id})">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+// ── Render bar chart ────────────────────────────────────────
+function renderChart(containerId, data) {
+  const el  = document.getElementById(containerId);
+  const max = Math.max(...Object.values(data));
+  el.innerHTML = Object.entries(data).map(([label, count]) => `
+    <div class="bar-row">
+      <div class="bar-label">${label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${(count/max*100).toFixed(1)}%"></div>
+      </div>
+      <div class="bar-count">${count}</div>
+    </div>`).join('');
+}
+
+// ── Favorites CRUD ──────────────────────────────────────────
+async function addFavorite(newspaperId) {
+  const res = await fetch(`${API}/api/favorites`, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ newspaperId })
+  });
+  if (res.ok) {
+    const fav = await res.json();
+    favoriteIds.add(newspaperId);
+    toast('📌 Saved to favorites!', 'bg-success text-white');
+    renderCards(allPapers.filter(p => {
+      // re-render current visible set
+      const grid = document.getElementById('cardsGrid');
+      return true;
+    }));
+    await loadFavorites();
+    // Re-render current filter view
+    applyFilters();
+  }
+}
+
+async function removeFavorite(favId, newspaperId) {
+  await fetch(`${API}/api/favorites/${favId}`, { method: 'DELETE' });
+  favoriteIds.delete(newspaperId);
+  toast('🗑️ Removed from favorites', 'bg-secondary text-white');
+  await loadFavorites();
+  applyFilters();
+}
+
+async function removeFavByNewspaper(newspaperId) {
+  const favs = await fetch(`${API}/api/favorites`).then(r => r.json());
+  const fav  = favs.find(f => f.newspaper.id === newspaperId);
+  if (fav) await removeFavorite(fav.id, newspaperId);
+}
+
+// ── Tab switching ───────────────────────────────────────────
+function showTab(name) {
+  ['browse','favorites','stats'].forEach(t => {
+    document.getElementById(`tab-${t}`).style.display = t === name ? '' : 'none';
+  });
+  document.querySelectorAll('#mainTabs .nav-link').forEach((btn, i) => {
+    btn.classList.toggle('active', ['browse','favorites','stats'][i] === name);
+  });
+  if (name === 'favorites') loadFavorites();
+  if (name === 'stats')     loadStats();
+}
+
+// ── Toast ───────────────────────────────────────────────────
+function toast(msg, bgClass = 'bg-dark text-white') {
+  const el = document.getElementById('toastEl');
+  el.className = `toast align-items-center border-0 ${bgClass}`;
+  document.getElementById('toastMsg').textContent = msg;
+  bootstrap.Toast.getOrCreateInstance(el, { delay: 2500 }).show();
+}
+
+function showSpinner(on) {
+  document.getElementById('spinner').style.display = on ? 'inline-block' : 'none';
+}
+</script>
+</body>
+</html>
