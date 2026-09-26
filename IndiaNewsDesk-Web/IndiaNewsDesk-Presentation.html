@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>IndiaNewsDesk — Java Full Stack Internship Presentation</title>
+<style>
+  /* ── Reset & Base ─────────────────────────────────────── */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background:#f0f2f5; }
+
+  /* ── Page / Slide ─────────────────────────────────────── */
+  .slide {
+    width: 297mm;
+    min-height: 210mm;
+    background: white;
+    margin: 10mm auto;
+    padding: 14mm 16mm;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,.15);
+  }
+
+  /* ── Colour palette ───────────────────────────────────── */
+  :root {
+    --saffron: #FF9933;
+    --green:   #138808;
+    --navy:    #1a237e;
+    --dark:    #212121;
+    --mid:     #455a64;
+    --light:   #eceff1;
+    --accent:  #e53935;
+  }
+
+  /* ── Top stripe (tricolor) ────────────────────────────── */
+  .stripe {
+    position:absolute; top:0; left:0; right:0; height:6px;
+    background: linear-gradient(90deg,
+      var(--saffron) 33.3%,
+      white 33.3% 66.6%,
+      var(--green) 66.6%);
+  }
+
+  /* ── Slide 1 — Title ──────────────────────────────────── */
+  .title-slide {
+    background: linear-gradient(135deg, #0d1b4b 0%, #1a3a8f 60%, #0d47a1 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 210mm;
+    padding: 20mm;
+  }
+  .title-slide .flag { font-size: 56px; margin-bottom: 10px; }
+  .title-slide h1 {
+    font-size: 42px; font-weight: 900; color: white;
+    letter-spacing: 2px; text-transform: uppercase;
+    text-shadow: 2px 2px 8px rgba(0,0,0,.4);
+    line-height: 1.2;
+  }
+  .title-slide .subtitle {
+    font-size: 18px; color: #90caf9; margin-top: 10px; font-weight: 400;
+  }
+  .title-slide .divider {
+    width: 80px; height: 4px; margin: 18px auto;
+    background: linear-gradient(90deg, var(--saffron), var(--green));
+    border-radius: 2px;
+  }
+  .title-slide .meta {
+    font-size: 14px; color: #bbdefb; margin-top: 8px; line-height: 1.8;
+  }
+  .title-slide .badge-row {
+    display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; justify-content: center;
+  }
+  .title-slide .badge {
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.3);
+    color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px;
+  }
+
+  /* ── Slide header ─────────────────────────────────────── */
+  .slide-header {
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 3px solid var(--saffron);
+    padding-bottom: 10px; margin-bottom: 18px; margin-top: 8px;
+  }
+  .slide-number {
+    background: var(--navy); color: white;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  .slide-header h2 {
+    font-size: 22px; color: var(--navy); font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .slide-header .icon { font-size: 26px; }
+
+  /* ── Content helpers ──────────────────────────────────── */
+  p  { font-size: 13.5px; color: var(--mid); line-height: 1.7; margin-bottom: 8px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { font-size: 13px; color: var(--mid); line-height: 1.75; }
+  li::marker { color: var(--saffron); font-size: 16px; }
+  strong { color: var(--dark); }
+
+  /* ── Cards ────────────────────────────────────────────── */
+  .card-grid {
+    display: grid; gap: 12px; margin-top: 10px;
+  }
+  .card-grid.col2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.col3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card-grid.col4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .card {
+    background: var(--light); border-radius: 10px;
+    padding: 14px 16px; border-left: 4px solid var(--saffron);
+  }
+  .card.green  { border-left-color: var(--green); }
+  .card.navy   { border-left-color: var(--navy); }
+  .card.red    { border-left-color: var(--accent); }
+  .card.orange { border-left-color: var(--saffron); }
+
+  .card h3 { font-size: 14px; color: var(--navy); margin-bottom: 6px; font-weight: 700; }
+  .card p  { font-size: 12px; margin: 0; }
+
+  /* ── Big stat ─────────────────────────────────────────── */
+  .stat-box {
+    background: var(--navy); color: white; border-radius: 12px;
+    padding: 16px; text-align: center;
+  }
+  .stat-box .num { font-size: 36px; font-weight: 900; color: var(--saffron); }
+  .stat-box .lbl { font-size: 12px; color: #90caf9; margin-top: 2px; }
+
+  /* ── Table ────────────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12.5px; }
+  th {
+    background: var(--navy); color: white;
+    padding: 8px 10px; text-align: left; font-weight: 600;
+  }
+  td { padding: 7px 10px; border-bottom: 1px solid #e0e0e0; color: var(--mid); }
+  tr:nth-child(even) td { background: #f5f5f5; }
+  td strong { color: var(--navy); }
+
+  /* ── Code block ───────────────────────────────────────── */
+  .code {
+    background: #1e1e2e; color: #cdd6f4; border-radius: 8px;
+    padding: 12px 16px; font-family: 'Courier New', monospace;
+    font-size: 11.5px; line-height: 1.7; margin: 10px 0;
+    overflow: hidden;
+  }
+  .code .kw  { color: #89b4fa; font-weight: bold; }
+  .code .ann { color: #cba6f7; }
+  .code .str { color: #a6e3a1; }
+  .code .cmt { color: #585b70; font-style: italic; }
+  .code .cls { color: #f9e2af; }
+
+  /* ── Architecture diagram ─────────────────────────────── */
+  .arch {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; margin: 16px 0;
+  }
+  .arch-box {
+    border-radius: 10px; padding: 14px 20px; text-align: center;
+    min-width: 100px; flex: 1;
+  }
+  .arch-box h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .arch-box p  { font-size: 11px; margin: 0; }
+  .arch-box.fe { background: #e3f2fd; border: 2px solid #1976d2; }
+  .arch-box.fe h4 { color: #1565c0; }
+  .arch-box.be { background: #fff3e0; border: 2px solid var(--saffron); }
+  .arch-box.be h4 { color: #e65100; }
+  .arch-box.db { background: #e8f5e9; border: 2px solid var(--green); }
+  .arch-box.db h4 { color: #2e7d32; }
+  .arch-arrow {
+    font-size: 22px; color: #90a4ae; flex-shrink: 0; padding: 0 8px;
+  }
+
+  /* ── Tag pills ────────────────────────────────────────── */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .tag {
+    background: var(--navy); color: white;
+    padding: 4px 12px; border-radius: 20px; font-size: 11.5px;
+    font-weight: 600;
+  }
+  .tag.orange { background: var(--saffron); color: white; }
+  .tag.green  { background: var(--green);   color: white; }
+  .tag.red    { background: var(--accent);  color: white; }
+
+  /* ── Timeline ─────────────────────────────────────────── */
+  .timeline { position: relative; margin: 10px 0 0 20px; }
+  .timeline::before {
+    content:''; position:absolute; left:10px; top:0; bottom:0;
+    width:3px; background: linear-gradient(180deg, var(--saffron), var(--green));
+    border-radius: 2px;
+  }
+  .tl-item { display:flex; gap:16px; margin-bottom:14px; position:relative; }
+  .tl-dot {
+    width:24px; height:24px; border-radius:50%;
+    background: var(--navy); color:white; display:flex;
+    align-items:center; justify-content:center; font-size:11px;
+    font-weight:700; flex-shrink:0; z-index:1;
+  }
+  .tl-content h4 { font-size:13px; color:var(--navy); font-weight:700; }
+  .tl-content p  { font-size:12px; color:var(--mid); margin:2px 0 0; }
+
+  /* ── API endpoint style ───────────────────────────────── */
+  .endpoint {
+    display:flex; align-items:center; gap:10px;
+    padding: 7px 12px; border-radius:6px;
+    margin-bottom:6px; background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+  }
+  .method {
+    font-size:11px; font-weight:800; padding:3px 8px;
+    border-radius:4px; flex-shrink:0; font-family:monospace;
+  }
+  .get    { background:#e3f2fd; color:#1565c0; }
+  .post   { background:#e8f5e9; color:#2e7d32; }
+  .delete { background:#ffebee; color:#c62828; }
+  .url    { font-family:monospace; font-size:12px; color:var(--dark); flex:1; }
+  .desc   { font-size:11.5px; color:var(--mid); }
+
+  /* ── Footer ───────────────────────────────────────────── */
+  .slide-footer {
+    position:absolute; bottom:8mm; left:16mm; right:16mm;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:10px; color:#bdbdbd; border-top:1px solid #eeeeee;
+    padding-top:5px;
+  }
+
+  /* ── Thank you slide ──────────────────────────────────── */
+  .thanks-slide {
+    background: linear-gradient(135deg, #0d1b4b 0%, #1a3a8f 60%, #0d47a1 100%);
+    display:flex; flex-direction:column; justify-content:center;
+    align-items:center; text-align:center; min-height:210mm;
+  }
+  .thanks-slide h1 { font-size:52px; color:white; font-weight:900; }
+  .thanks-slide p  { color:#90caf9; font-size:16px; margin-top:12px; }
+  .thanks-slide .big { font-size:64px; margin-bottom:16px; }
+
+  /* ── Print ────────────────────────────────────────────── */
+  @media print {
+    body { background:white; }
+    .slide { margin:0; box-shadow:none; width:100%; }
+    @page { size: A4 landscape; margin: 0; }
+  }
+
+  /* ── Screen nav ───────────────────────────────────────── */
+  .nav-bar {
+    position:fixed; top:0; left:0; right:0; z-index:999;
+    background:var(--navy); color:white;
+    padding:10px 20px; display:flex; justify-content:space-between;
+    align-items:center; font-size:14px;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+  }
+  .nav-bar button {
+    background:var(--saffron); border:none; color:white;
+    padding:6px 18px; border-radius:6px; cursor:pointer;
+    font-size:13px; font-weight:700;
+  }
+  @media print { .nav-bar { display:none; } }
+</style>
+</head>
+<body>
+
+<!-- Screen navigation bar -->
+<div class="nav-bar">
+  <span>🇮🇳 IndiaNewsDesk — Java Full Stack Internship</span>
+  <button onclick="window.print()">🖨️ Save as PDF</button>
+</div>
+
+<div style="height:50px"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 1 — TITLE
+══════════════════════════════════════════════════════ -->
+<div class="slide title-slide">
+  <div class="flag">🇮🇳 📰</div>
+  <h1>IndiaNewsDesk</h1>
+  <div class="subtitle">Java Full Stack Web Portal</div>
+  <div class="divider"></div>
+  <div class="meta">
+    <strong style="color:white">Internship Project — Java Full Stack Development</strong><br/>
+    Spring Boot &nbsp;·&nbsp; MySQL &nbsp;·&nbsp; Hibernate &nbsp;·&nbsp; Bootstrap 5 &nbsp;·&nbsp; REST API
+  </div>
+  <div class="badge-row">
+    <div class="badge">☕ Java 17</div>
+    <div class="badge">🌱 Spring Boot 3.2</div>
+    <div class="badge">🗄️ MySQL</div>
+    <div class="badge">🎨 Bootstrap 5</div>
+    <div class="badge">🔗 REST API</div>
+    <div class="badge">📦 Hibernate ORM</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 2 — INTERNSHIP OVERVIEW
+══════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="slide-header">
+    <div class="slide-number">1</div>
+    <span class="icon">🎓</span>
+    <h2>Internship Overview</h2>
+  </div>
+
+  <div class="card-grid col2">
+    <div>
+      <div class="card navy">
+        <h3>🏢 Internship Domain</h3>
+        <p><strong>Java Full Stack Development</strong><br/>
+        Building end-to-end web applications using Java backend and modern frontend technologies.</p>
+      </div>
+      <br/>
+      <div class="card green">
+        <h3>🎯 Objective</h3>
+        <p>Develop a production-grade web portal that demonstrates all core Java full stack concepts — from database to browser.</p>
+      </div>
+      <br/>
+      <div class="card orange">
+        <h3>🛠️ Tech Stack Learned</h3>
+        <ul>
+          <li>Core Java 17 — OOP, Generics, Streams, Collections</li>
+          <li>Spring Boot 3 — REST APIs, Dependency Injection</li>
+          <li>Spring Data JPA + Hibernate — ORM, Database</li>
+          <li>MySQL — Relational database design</li>
+          <li>Bootstrap 5 + JavaScript — Responsive frontend</li>
+          <li>Maven — Build and dependency management</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot">1</div>
+          <div class="tl-content">
+            <h4>Core Java Fundamentals</h4>
+            <p>OOP, Inheritance, Interfaces, Generics, Collections, Streams, Exception Handling</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">2</div>
+          <div class="tl-content">
+            <h4>Console Projects</h4>
+            <p>BankVault Banking System — Singleton, Builder, Observer patterns, Concurrency, File I/O</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">3</div>
+          <div class="tl-content">
+            <h4>Spring Boot Basics</h4>
+            <p>REST Controllers, @Service, @Repository, Dependency Injection, application.properties</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">4</div>
+          <div class="tl-content">
+            <h4>Database Integration</h4>
+            <p>JPA Entities, Hibernate ORM, MySQL, Spring Data repositories, JPQL queries</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">5</div>
+          <div class="tl-content">
+            <h4>Full Stack Project</h4>
+            <p>IndiaNewsDesk — complete web portal with REST API + Bootstrap frontend + MySQL</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">6</div>
+          <div class="tl-content">
+            <h4>Deployment & Testing</h4>
+            <p>Maven build, local server deployment, API testing, browser frontend validation</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>IndiaNewsDesk — Java Full Stack Internship</span>
+    <span>Slide 1</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 3 — PROJECT INTRODUCTION
+══════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="slide-header">
+    <div class="slide-number">2</div>
+    <span class="icon">📰</span>
+    <h2>Project Introduction</h2>
+  </div>
+
+  <p><strong>IndiaNewsDesk</strong> is a full-stack web application that allows users to browse, filter, and bookmark today's Indian newspapers by state and language — covering all 36 states and UTs across 14 Indian languages.</p>
+
+  <div class="card-grid col4" style="margin-top:14px">
+    <div class="stat-box">
+      <div class="num">40+</div>
+      <div class="lbl">Real Indian Newspapers</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">14</div>
+      <div class="lbl">Languages Supported</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">36</div>
+      <div class="lbl">States & Union Territories</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">9</div>
+      <div class="lbl">REST API Endpoints</div>
+    </div>
+  </div>
+
+  <br/>
+  <div class="card-grid col3">
+    <div class="card">
+      <h3>🌐 Browse & Filter</h3>
+      <p>Select any Indian state and language combination. Results appear instantly without page reload using Fetch API.</p>
+    </div>
+    <div class="card green">
+      <h3>📄 ePaper Access</h3>
+      <p>Each newspaper card links directly to the official ePaper website. Free and login-required papers are clearly marked.</p>
+    </div>
+    <div class="card navy">
+      <h3>⭐ Bookmarks</h3>
+      <p>Users can save favorite newspapers. Bookmarks are stored permanently in MySQL database via REST API.</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>IndiaNewsDesk — Java Full Stack Internship</span>
+    <span>Slide 2</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 4 — SYSTEM ARCHITECTURE
+══════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="slide-header">
+    <div class="slide-number">3</div>
+    <span class="icon">🏗️</span>
+    <h2>System Architecture — 3-Tier</h2>
+  </div>
+
+  <div class="arch">
+    <div class="arch-box fe">
+      <h4>🎨 Presentation Layer</h4>
+      <p>HTML5 + Bootstrap 5<br/>JavaScript Fetch API<br/>Dynamic UI (no reload)<br/>index.html</p>
+    </div>
+    <div class="arch-arrow">⟷</div>
+    <div class="arch-box be">
+      <h4>⚙️ Business Layer</h4>
+      <p>Spring Boot 3<br/>REST Controllers<br/>Service Classes<br/>Java Streams / OOP</p>
+    </div>
+    <div class="arch-arrow">⟷</div>
+    <div class="arch-box db">
+      <h4>🗄️ Data Layer</h4>
+      <p>MySQL Database<br/>Hibernate ORM<br/>Spring Data JPA<br/>2 tables</p>
+    </div>
+  </div>
+
+  <div class="card-grid col2" style="margin-top:14px">
+    <div>
+      <p><strong>📁 Project Package Structure</strong></p>
+      <div class="code">
+<span class="str">com.indianewsdesk</span>
+├── <span class="ann">entity</span>/      <span class="cmt">// JPA Entities (DB tables)</span>
+│   ├── Newspaper.java
+│   └── Favorite.java
+├── <span class="ann">repository</span>/  <span class="cmt">// Spring Data JPA</span>
+│   ├── NewspaperRepository.java
+│   └── FavoriteRepository.java
+├── <span class="ann">service</span>/     <span class="cmt">// Business logic</span>
+│   └── NewspaperService.java
+├── <span class="ann">controller</span>/  <span class="cmt">// REST API</span>
+│   └── NewspaperController.java
+├── <span class="ann">dto</span>/         <span class="cmt">// Data Transfer Object</span>
+│   └── StatsDTO.java
+└── <span class="cls">IndiaNewsDeskApplication</span>.java
+      </div>
+    </div>
+    <div>
+      <p><strong>🗄️ Database Schema</strong></p>
+      <div class="code">
+<span class="kw">CREATE TABLE</span> <span class="cls">newspapers</span> (
+  id          <span class="kw">BIGINT</span> AUTO_INCREMENT <span class="kw">PRIMARY KEY</span>,
+  name        <span class="kw">VARCHAR</span>(255) <span class="kw">NOT NULL</span>,
+  language    <span class="kw">VARCHAR</span>(100),
+  state       <span class="kw">VARCHAR</span>(100),
+  website_url <span class="kw">VARCHAR</span>(500),
+  epaper_url  <span class="kw">VARCHAR</span>(500),
+  founded     <span class="kw">VARCHAR</span>(10),
+  free_epaper <span class="kw">BOOLEAN</span>,
+  region      <span class="kw">VARCHAR</span>(50)
+);
+
+<span class="kw">CREATE TABLE</span> <span class="cls">favorites</span> (
+  id            <span class="kw">BIGINT</span> AUTO_INCREMENT <span class="kw">PRIMARY KEY</span>,
+  newspaper_id  <span class="kw">BIGINT REFERENCES</span> newspapers(id),
+  saved_at      <span class="kw">DATETIME</span>
+);
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>IndiaNewsDesk — Java Full Stack Internship</span>
+    <span>Slide 3</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 5 — JAVA CONCEPTS USED
+══════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="slide-header">
+    <div class="slide-number">4</div>
+    <span class="icon">☕</span>
+    <h2>Core Java Concepts Applied</h2>
+  </div>
+
+  <div class="card-grid col2">
+    <div>
+      <table>
+        <tr>
+          <th>Java Concept</th>
+          <th>Where Used</th>
+        </tr>
+        <tr>
+          <td><strong>OOP — Encapsulation</strong></td>
+          <td>Private fields + public getters in Newspaper, Favorite</td>
+        </tr>
+        <tr>
+          <td><strong>Inheritance</strong></td>
+          <td>SavingsAccount / CurrentAccount extend Account</td>
+        </tr>
+        <tr>
+          <td><strong>Interfaces</strong></td>
+          <td>Repository&lt;T,ID&gt; generic interface</td>
+        </tr>
+        <tr>
+          <td><strong>Generics</strong></td>
+          <td>Repository&lt;Newspaper, Long&gt;, List&lt;T&gt;</td>
+        </tr>
+        <tr>
+          <td><strong>Collections</strong></td>
+          <td>List, Map, LinkedHashMap in service layer</td>
+        </tr>
+        <tr>
+          <td><strong>Streams + Lambdas</strong></td>
+          <td>.stream().filter().sorted().collect()</td>
+        </tr>
+        <tr>
+          <td><strong>Exception Handling</strong></td>
+          <td>Try-catch, NoSuchElementException in service</td>
+        </tr>
+        <tr>
+          <td><strong>Builder Pattern</strong></td>
+          <td>Newspaper.builder().name().language().build()</td>
+        </tr>
+        <tr>
+          <td><strong>Annotations</strong></td>
+          <td>@Entity, @RestController, @Service, @Repository</td>
+        </tr>
+        <tr>
+          <td><strong>Dependency Injection</strong></td>
+          <td>Constructor injection in Service and Controller</td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <p><strong>Streams + Lambdas in Action:</strong></p>
+      <div class="code">
+<span class="cmt">// Filter by state, sort alphabetically</span>
+<span class="kw">public</span> List&lt;<span class="cls">Newspaper</span>&gt; getAll() {
+  <span class="kw">return</span> newspaperRepo
+    .findAll()
+    .<span class="ann">stream</span>()
+    .<span class="ann">sorted</span>(<span class="cls">Comparator</span>
+      .comparing(<span class="cls">Newspaper</span>::getName))
+    .<span class="ann">collect</span>(<span class="cls">Collectors</span>.toList());
+}
+
+<span class="cmt">// Count by language using groupingBy</span>
+Map&lt;String, Long&gt; stats = papers
+  .<span class="ann">stream</span>()
+  .<span class="ann">collect</span>(<span class="cls">Collectors</span>
+    .groupingBy(<span class="cls">Newspaper</span>::getLanguage,
+                <span class="cls">Collectors</span>.counting()));
+      </div>
+
+      <p style="margin-top:10px"><strong>JPA Entity + ORM:</strong></p>
+      <div class="code">
+<span class="ann">@Entity</span>
+<span class="ann">@Table</span>(name = <span class="str">"newspapers"</span>)
+<span class="kw">public class</span> <span class="cls">Newspaper</span> {
+
+  <span class="ann">@Id</span>
+  <span class="ann">@GeneratedValue</span>(strategy =
+      GenerationType.IDENTITY)
+  <span class="kw">private</span> Long id;
+
+  <span class="ann">@Column</span>(nullable = <span class="kw">false</span>)
+  <span class="kw">private</span> String name;
+  <span class="cmt">// Hibernate maps this → MySQL column</span>
+}
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>IndiaNewsDesk — Java Full Stack Internship</span>
+    <span>Slide 4</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 6 — SPRING BOOT & REST API
+══════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="slide-header">
+    <div class="slide-number">5</div>
+    <span class="icon">🌱</span>
+    <h2>Spring Boot — REST API Endpoints</h2>
+  </div>
+
+  <div class="card-grid col2">
+    <div>
+      <p><strong>All 9 API endpoints:</strong></p>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/api/newspapers</span>
+        <span class="desc">All newspapers sorted A–Z</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/api/newspapers/filter?state=&language=</span>
+        <span class="desc">Filter by state + language</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/api/newspapers/{id}</span>
+        <span class="desc">Get one newspaper by ID</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/api/search?keyword=Hindu</span>
+        <span class="desc">Search by name keyword</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/api/languages</span>
+        <span class="desc">All distinct languages</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/api/states</span>
+        <span class="desc">All distinct states</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/api/stats</span>
+        <span class="desc">Count by language + region</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/api/favorites</span>
+        <span class="desc">All saved favorites</span>
+      </div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/api/favorites</span>
+        <span class="desc">Save a favorite</span>
+      </div>
+      <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <span class="url">/api/favorites/{id}</span>
+        <span class="desc">Remove a favorite</span>
+      </div>
+    </div>
+    <div>
+      <p><strong>REST Controller Code:</strong></p>
+      <div class="code">
+<span class="ann">@RestController</span>
+<span class="ann">@RequestMapping</span>(<span class="str">"/api"</span>)
+<span class="ann">@CrossOrigin</span>(origins = <span class="str">"*"</span>)
+<span class="kw">public class</span> <span class="cls">NewspaperController</span> {
+
+  <span class="kw">private final</span> <span class="cls">NewspaperService</span> service;
+
+  <span class="ann">@GetMapping</span>(<span class="str">"/newspapers/filter"</span>)
+  <span class="kw">public</span> List&lt;<span class="cls">Newspaper</span>&gt; filter(
+      <span class="ann">@RequestParam</span>(required=<span class="kw">false</span>)
+          String state,
+      <span class="ann">@RequestParam</span>(required=<span class="kw">false</span>)
+          String language) {
+    <span class="kw">return</span> service
+      .getByStateAndLanguage(state, language);
+  }
+
+  <span class="ann">@PostMapping</span>(<span class="str">"/favorites"</span>)
+  <span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">Favorite</span>&gt;
+      addFavorite(
+      <span class="ann">@RequestBody</span>
+          Map&lt;String,Long&gt; body) {
+    Long nid = body.get(<span class="str">"newspaperId"</span>);
+    <span class="kw">return</span> ResponseEntity.ok(
+        service.addFavorite(nid));
+  }
+}
+      </div>
+      <div class="tags" style="margin-top:10px">
+        <span class="tag">@RestController</span>
+        <span class="tag orange">@GetMapping</span>
+        <span class="tag green">@PostMapping</span>
+        <span class="tag red">@DeleteMapping</span>
+        <span class="tag">@RequestParam</span>
+        <span class="tag">@PathVariable</span>
+        <span class="tag orange">ResponseEntity</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>IndiaNewsDesk — Java Full Stack Internship</span>
+    <span>Slide 5</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 7 — JPA & HIBERNATE
+══════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="slide-header">
+    <div class="slide-number">6</div>
+    <span class="icon">🗄️</span>
+    <h2>Spring Data JPA + Hibernate ORM</h2>
+  </div>
+
+  <p>Hibernate automatically converts Java objects ↔ MySQL database rows. No manual SQL needed for basic operations.</p>
+
+  <div class="card-grid col2" style="margin-top:10px">
+    <div>
+      <div class="code">
+<span class="cmt">// Spring Data — auto-generates SQL</span>
+<span class="ann">@Repository</span>
+<span class="kw">public interface</span> <span class="cls">NewspaperRepository</span>
+    <span class="kw">extends</span> <span class="cls">JpaRepository</span>&lt;<span class="cls">Newspaper</span>, Long&gt; {
+
+  <span class="cmt">// → SELECT * WHERE language = ?</span>
+  List&lt;<span class="cls">Newspaper</span>&gt; findByLanguageIgnoreCase(
+      String language);
+
+  <span class="cmt">// → SELECT * WHERE state = ? AND lang = ?</span>
+  List&lt;<span class="cls">Newspaper</span>&gt;
+    findByStateIgnoreCaseAndLanguageIgnoreCase(
+      String state, String language);
+
+  <span class="cmt">// Custom JPQL query</span>
+  <span class="ann">@Query</span>(<span class="str">"SELECT n FROM Newspaper n WHERE "</span>
+       + <span class="str">"LOWER(n.name) LIKE "</span>
+       + <span class="str">"LOWER(CONCAT('%',:kw,'%'))"</span>)
+  List&lt;<span class="cls">Newspaper</span>&gt; searchByName(
+      <span class="ann">@Param</span>(<span class="str">"kw"</span>) String keyword);
+
+  <span class="cmt">// Aggregation — group by language</span>
+  <span class="ann">@Query</span>(<span class="str">"SELECT n.language, COUNT(n) "</span>
+       + <span class="str">"FROM Newspaper n "</span>
+       + <span class="str">"GROUP BY n.language"</span>)
+  List&lt;Object[]&gt; countByLanguage();
+}
+      </div>
+    </div>
+    <div>
+      <p><strong>Key JPA Concepts:</strong></p>
+      <table>
+        <tr><th>Annotation</th><th>Purpose</th></tr>
+        <tr><td><strong>@Entity</strong></td><td>Marks class as DB table</td></tr>
+        <tr><td><strong>@Table</strong></td><td>Specifies table name</td></tr>
+        <tr><td><strong>@Id</strong></td><td>Primary key column</td></tr>
+        <tr><td><strong>@GeneratedValue</strong></td><td>Auto-increment ID</td></tr>
+        <tr><td><strong>@Column</strong></td><td>Column mapping + constraints</td></tr>
+        <tr><td><strong>@ManyToOne</strong></td><td>Foreign key relation</td></tr>
+        <tr><td><strong>@JoinColumn</strong></td><td>FK column name</td></tr>
+        <tr><td><strong>@PrePersist</strong></td><td>Run code before insert</td></tr>
+        <tr><td><strong>@Transactional</strong></td><td>Database transaction</td></tr>
+      </table>
+
+      <br/>
+      <div class="card green">
+        <h3>⚡ What Hibernate Does Automatically</h3>
+        <p>• Creates tables on first run (<code>ddl-auto=update</code>)<br/>
+        • Generates SQL for all CRUD operations<br/>
+        • Manages connection pooling (HikariCP)<br/>
+        • Maps Java types ↔ MySQL data types<br/>
+        • Handles transactions and rollbacks</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>IndiaNewsDesk — Java Full Stack Internship</span>
+    <span>Slide 6</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 8 — FRONTEND
+══════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="slide-header">
+    <div class="slide-number">7</div>
+    <span class="icon">🎨</span>
+    <h2>Frontend — Bootstrap 5 + JavaScript</h2>
+  </div>
+
+  <div class="card-grid col2">
+    <div>
+      <div class="card-grid col1">
+        <div class="card">
+          <h3>📋 Browse Tab</h3>
+          <p>Filter dropdowns for State + Language. Live search as you type. Newspaper cards with ePaper and Website buttons. Shows free vs login-required papers.</p>
+        </div>
+        <br/>
+        <div class="card green">
+          <h3>⭐ Favorites Tab</h3>
+          <p>Click Save on any card to bookmark it. Stored in MySQL via POST /api/favorites. Remove anytime. Count shown in badge.</p>
+        </div>
+        <br/>
+        <div class="card navy">
+          <h3>📊 Stats Tab</h3>
+          <p>Bar chart showing newspaper count by language and by region. Data fetched from GET /api/stats and rendered dynamically.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p><strong>How the frontend talks to the backend:</strong></p>
+      <div class="code">
+<span class="cmt">// Fetch API — filter by state + language</span>
+<span class="kw">async function</span> <span class="ann">applyFilters</span>() {
+  <span class="kw">const</span> state = stateFilter.value;
+  <span class="kw">const</span> lang  = langFilter.value;
+
+  <span class="kw">const</span> url = <span class="str">`/api/newspapers/filter</span>
+    <span class="str">?state=${state}&language=${lang}`</span>;
+
+  <span class="kw">const</span> data = <span class="kw">await</span> fetch(url)
+    .then(r => r.json());
+
+  renderCards(data);  <span class="cmt">// update UI</span>
+}
+
+<span class="cmt">// Save favorite — POST request</span>
+<span class="kw">async function</span> <span class="ann">addFavorite</span>(newspaperId) {
+  <span class="kw">await</span> fetch(<span class="str">'/api/favorites'</span>, {
+    method:  <span class="str">'POST'</span>,
+    headers: {<span class="str">'Content-Type'</span>:<span class="str">'application/json'</span>},
+    body: JSON.stringify({ newspaperId })
+  });
+}
+      </div>
+      <div class="tags" style="margin-top:10px">
+        <span class="tag">Bootstrap 5</span>
+        <span class="tag orange">Fetch API</span>
+        <span class="tag green">Responsive Grid</span>
+        <span class="tag">Dynamic Cards</span>
+        <span class="tag red">Toast Notifications</span>
+        <span class="tag">No Page Reload</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>IndiaNewsDesk — Java Full Stack Internship</span>
+    <span>Slide 7</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 9 — DESIGN PATTERNS
+══════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="slide-header">
+    <div class="slide-number">8</div>
+    <span class="icon">🧩</span>
+    <h2>Design Patterns & Best Practices</h2>
+  </div>
+
+  <div class="card-grid col3">
+    <div class="card">
+      <h3>🏗️ Builder Pattern</h3>
+      <p>Used in <strong>Newspaper</strong> entity to construct objects fluently:</p>
+      <div class="code" style="font-size:10.5px; margin-top:6px">
+<span class="cls">Newspaper</span>.builder()
+  .name(<span class="str">"The Hindu"</span>)
+  .language(<span class="str">"English"</span>)
+  .state(<span class="str">"Tamil Nadu"</span>)
+  .freeEpaper(<span class="kw">true</span>)
+  .build();
+      </div>
+    </div>
+    <div class="card green">
+      <h3>🔌 Repository Pattern</h3>
+      <p>All database access goes through <strong>Repository interfaces</strong>. Controller → Service → Repository. Clean separation.</p>
+      <div class="code" style="font-size:10.5px; margin-top:6px">
+<span class="cmt">// Controller calls Service</span>
+service.getByState(state);
+<span class="cmt">// Service calls Repository</span>
+repo.findByStateIgnoreCase(s);
+<span class="cmt">// Repository calls Database</span>
+      </div>
+    </div>
+    <div class="card navy">
+      <h3>💉 Dependency Injection</h3>
+      <p>Spring auto-creates and injects objects. No <code>new</code> keyword needed. Makes code testable and loosely coupled.</p>
+      <div class="code" style="font-size:10.5px; margin-top:6px">
+<span class="ann">@Service</span>
+<span class="kw">public class</span> <span class="cls">NewspaperService</span> {
+  <span class="cmt">// Spring injects this</span>
+  <span class="kw">private final</span>
+    <span class="cls">NewspaperRepository</span> repo;
+}
+      </div>
+    </div>
+  </div>
+
+  <br/>
+  <div class="card-grid col2">
+    <div class="card orange">
+      <h3>📦 DTO Pattern (Data Transfer Object)</h3>
+      <p><strong>StatsDTO</strong> carries only the data needed by the frontend — total count, favorites count, breakdown by language and region. Avoids exposing raw database objects to the API.</p>
+    </div>
+    <div class="card red">
+      <h3>🔒 3-Tier Layered Architecture</h3>
+      <p><strong>Controller</strong> → only handles HTTP requests<br/>
+      <strong>Service</strong> → only contains business logic<br/>
+      <strong>Repository</strong> → only talks to database<br/>
+      Each layer has one responsibility (Single Responsibility Principle).</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>IndiaNewsDesk — Java Full Stack Internship</span>
+    <span>Slide 8</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 10 — KEY LEARNINGS
+══════════════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="slide-header">
+    <div class="slide-number">9</div>
+    <span class="icon">💡</span>
+    <h2>Key Learnings from Internship</h2>
+  </div>
+
+  <div class="card-grid col2">
+    <div>
+      <div class="card">
+        <h3>☕ Core Java Mastery</h3>
+        <ul>
+          <li>OOP principles — Abstraction, Encapsulation, Inheritance, Polymorphism</li>
+          <li>Generics for type-safe collections and repositories</li>
+          <li>Stream API for functional-style data processing</li>
+          <li>Exception handling with custom exception hierarchies</li>
+          <li>Design patterns — Builder, Singleton, Observer, Strategy</li>
+        </ul>
+      </div>
+      <br/>
+      <div class="card green">
+        <h3>🌱 Spring Boot Ecosystem</h3>
+        <ul>
+          <li>Auto-configuration reduces boilerplate code</li>
+          <li>Dependency injection for loose coupling</li>
+          <li>Spring Data JPA eliminates manual SQL writing</li>
+          <li>@RestController for building JSON APIs in minutes</li>
+          <li>application.properties for environment configuration</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card navy">
+        <h3>🗄️ Database & ORM</h3>
+        <ul>
+          <li>Relational database design with primary/foreign keys</li>
+          <li>Hibernate auto-creates and manages schema</li>
+          <li>JPQL for custom database queries in Java syntax</li>
+          <li>@ManyToOne relation between Favorite and Newspaper</li>
+          <li>@Transactional for safe multi-step database operations</li>
+        </ul>
+      </div>
+      <br/>
+      <div class="card orange">
+        <h3>🌐 Full Stack Development</h3>
+        <ul>
+          <li>REST API design — GET, POST, DELETE endpoints</li>
+          <li>JSON as data format between backend and frontend</li>
+          <li>JavaScript Fetch API for async HTTP requests</li>
+          <li>Bootstrap 5 for responsive, mobile-friendly UI</li>
+          <li>Maven for build automation and dependency management</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>IndiaNewsDesk — Java Full Stack Internship</span>
+    <span>Slide 9</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SLIDE 11 — THANK YOU
+══════════════════════════════════════════════════════ -->
+<div class="slide thanks-slide">
+  <div class="big">🙏</div>
+  <h1 style="color:white; font-size:48px; font-weight:900">Thank You</h1>
+  <div style="width:80px;height:4px;background:linear-gradient(90deg,#FF9933,white,#138808);border-radius:2px;margin:16px auto"></div>
+  <p style="color:#90caf9; font-size:16px; margin-top:10px">
+    <strong style="color:white">IndiaNewsDesk Web Portal</strong><br/>
+    Java Full Stack Internship Project
+  </p>
+  <div style="display:flex;gap:16px;margin-top:24px;flex-wrap:wrap;justify-content:center">
+    <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:10px 20px;border-radius:10px;font-size:13px">
+      ☕ <strong>Backend</strong><br/>Spring Boot + Java 17
+    </div>
+    <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:10px 20px;border-radius:10px;font-size:13px">
+      🗄️ <strong>Database</strong><br/>MySQL + Hibernate JPA
+    </div>
+    <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:10px 20px;border-radius:10px;font-size:13px">
+      🎨 <strong>Frontend</strong><br/>Bootstrap 5 + Fetch API
+    </div>
+    <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:10px 20px;border-radius:10px;font-size:13px">
+      🔗 <strong>API</strong><br/>9 REST Endpoints
+    </div>
+  </div>
+  <p style="color:#64b5f6; font-size:13px; margin-top:28px">
+    🌐 Run locally: <strong style="color:white">http://localhost:8080</strong><br/>
+    📂 Source: <strong style="color:white">~/Desktop/java/IndiaNewsDesk-Web</strong>
+  </p>
+</div>
+
+</body>
+</html>
